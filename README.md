@@ -45,4 +45,4 @@ The plugin add the following permissions:
 - `ecortewhitelist.whitelist.bypass`: Allow to bypass the whitelist
 
 ### LuckPerms Contexts
-This plugin add the `iswhitelisted` context to LuckPerms. This context is true if the player is whitelisted, false otherwise.
+This plugin adds the `iswhitelisted` context to LuckPerms. This context is true if the player is whitelisted, false otherwise.
