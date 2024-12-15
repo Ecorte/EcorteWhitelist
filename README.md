@@ -37,5 +37,12 @@ Get the whitelist status of a player:
 /whitelist status <player>
 ```
 
+### Permissions
+The plugin add the following permissions:
+- `ecortewhitelist.whitelist.add`: Allow to add a player to the whitelist
+- `ecortewhitelist.whitelist.remove`: Allow to remove a player from the whitelist
+- `ecortewhitelist.whitelist.status`: Allow to get the whitelist status of a player
+- `ecortewhitelist.whitelist.bypass`: Allow to bypass the whitelist
+
 ### LuckPerms Contexts
 This plugin add the `iswhitelisted` context to LuckPerms. This context is true if the player is whitelisted, false otherwise.
