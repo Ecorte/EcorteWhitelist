@@ -24,24 +24,24 @@ A simple MariaDB whitelist plugin for PaperMC servers.
 ### Whitelist
 Whitelist a player by name:
 ```
-/whitelist add <player>
+/ewl add <player>
 ```
+Permission: `ecortewhitelist.whitelist.add`
 
 Remove a player from the whitelist:
 ```
-/whitelist remove <player>
+/ewl remove <player>
 ```
+Permission: `ecortewhitelist.whitelist.remove`
 
 Get the whitelist status of a player:
 ```
-/whitelist status <player>
+/ewl status <player>
 ```
+Permission: `ecortewhitelist.whitelist.status`
 
 ### Permissions
 The plugin add the following permissions:
-- `ecortewhitelist.whitelist.add`: Allow to add a player to the whitelist
-- `ecortewhitelist.whitelist.remove`: Allow to remove a player from the whitelist
-- `ecortewhitelist.whitelist.status`: Allow to get the whitelist status of a player
 - `ecortewhitelist.whitelist.bypass`: Allow to bypass the whitelist
 
 ### LuckPerms Contexts
