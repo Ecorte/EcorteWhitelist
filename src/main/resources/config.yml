@@ -1,0 +1,11 @@
+database:
+  # Database connection URL
+  dbUrl: jdbc:mysql://localhost:3306/ecortewhitelist
+  # Database username
+  username: root
+  # Database password
+  password: root
+
+config:
+  # Whether to require a whitelist to join the server
+  requireWhitelist: true

@@ -1,0 +1,16 @@
+name: EcorteWhitelist
+version: '1.0-SNAPSHOT'
+main: org.ecorte.ecorteWhitelist.EcorteWhitelist
+api-version: '1.21'
+authors: [ Ecorte ]
+description: A whitelist plugin
+dependencies:
+  server:
+    CommandAPI:
+      load: BEFORE
+      required: true
+      join-classpath: true
+    LuckPerms:
+      load: BEFORE
+      required: true
+      join-classpath: true
