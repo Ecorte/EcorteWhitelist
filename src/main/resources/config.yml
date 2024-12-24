@@ -1,6 +1,6 @@
 database:
   # Database connection URL
-  dbUrl: jdbc:mysql://localhost:3306/ecortewhitelist
+  dbUrl: jdbc:mysql://localhost:3306/minecraft
   # Database username
   username: root
   # Database password
@@ -9,3 +9,9 @@ database:
 config:
   # Whether to require a whitelist to join the server
   requireWhitelist: true
+
+messages:
+  # Prefix for all messages
+  responsePrefix: "<b><pink>EcorteWhitelist</pink> <gray>»</gray></b>"
+  # Message to send to players who are not on the whitelist
+  kickMessage: "You are not on the whitelist!"

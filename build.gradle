@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'org.ecorte'
-version = '1.0'
+version = '1.1'
 
 repositories {
     mavenCentral()
@@ -20,12 +20,17 @@ repositories {
         name = "codemc-repo"
         url = "https://repo.codemc.org/repository/maven-public/"
     }
+    maven {
+        name = 'spigot-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
     compileOnly("dev.jorel:commandapi-bukkit-core:9.7.0")
     compileOnly("net.luckperms:api:5.4")
+    implementation("org.bstats:bstats-bukkit:3.0.2")
     implementation("com.zaxxer:HikariCP:4.0.3")
 }
 
@@ -60,6 +65,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 tasks.withType(ShadowJar).configureEach {
     relocate 'com.zaxxer.hikari', 'org.ecorte.shaded.hikari'
+    relocate 'org.bstats', 'org.ecorte.shaded.bstats'
     minimize()
 }
 

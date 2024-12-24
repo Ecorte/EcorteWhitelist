@@ -1,8 +1,10 @@
 package org.ecorte.ecorteWhitelist;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -14,7 +16,7 @@ public class WhitelistListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(PlayerJoinEvent event) {
         if (!plugin.config.requireWhitelist) {
             return;
@@ -27,8 +29,11 @@ public class WhitelistListener implements Listener {
         }
 
         if (!plugin.whitelist.contains(event.getPlayer().getUniqueId())) {
-            final Component component = Component.text("You are not on the whitelist!");
-            event.getPlayer().kick(component);
+            event.joinMessage(null);
+
+            MiniMessage mm = MiniMessage.miniMessage();
+            Component parsed = mm.deserialize(plugin.config.kickMessage);
+            event.getPlayer().kick(parsed);
         }
     }
 }

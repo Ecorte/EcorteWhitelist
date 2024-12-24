@@ -22,6 +22,7 @@ public class DBManager {
     }
 
     public void connectToSQL() {
+        this.config = Config.getInstance(plugin);
         if (config.dbUrl == null || config.username == null || config.password == null) {
             plugin.getLogger().severe("Database connection not configured!");
             return;

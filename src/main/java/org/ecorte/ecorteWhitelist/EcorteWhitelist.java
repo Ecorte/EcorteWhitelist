@@ -1,5 +1,9 @@
 package org.ecorte.ecorteWhitelist;
 
+import dev.jorel.commandapi.arguments.BooleanArgument;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bstats.bukkit.Metrics;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.OfflinePlayerArgument;
 import net.luckperms.api.LuckPerms;
@@ -17,7 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public final class EcorteWhitelist extends JavaPlugin {
-    public LuckPerms luckPerms;
     public Config config;
     public final Set<UUID> whitelist = Collections.synchronizedSet(new HashSet<>());
     public DBManager dbManager;
@@ -30,15 +33,19 @@ public final class EcorteWhitelist extends JavaPlugin {
                 .withArguments(new OfflinePlayerArgument("player"))
                 .executes((sender, args) -> {
                     OfflinePlayer player = (OfflinePlayer) args.get("player");
+                    var mm = MiniMessage.miniMessage();
+                    Component parsed;
                     if (player == null) {
-                        sender.sendMessage("Player not found");
+                        parsed = mm.deserialize(this.config.responsePrefix + " Player not found");
+                        sender.sendMessage(parsed);
                         return;
                     }
                     UUID uuid = player.getUniqueId();
                     UUID senderUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
                     if (sender instanceof Player) senderUUID = ((Player) sender).getUniqueId();
                     this.AddToWhitelist(uuid, senderUUID);
-                    sender.sendMessage("Player added");
+                    parsed = mm.deserialize(this.config.responsePrefix + " Player <green>" + player.getName() + "</green> added to the whitelist by <gold>" + sender.getName() + "</gold>");
+                    sender.sendMessage(parsed);
                 });
 
         CommandAPICommand RemoveCommand = new CommandAPICommand("remove")
@@ -46,13 +53,17 @@ public final class EcorteWhitelist extends JavaPlugin {
                 .withArguments(new OfflinePlayerArgument("player"))
                 .executes((sender, args) -> {
                     OfflinePlayer player = (OfflinePlayer) args.get("player");
+                    var mm = MiniMessage.miniMessage();
+                    Component parsed;
                     if (player == null) {
-                        sender.sendMessage("Player not found");
+                        parsed = mm.deserialize(this.config.responsePrefix + " Player not found");
+                        sender.sendMessage(parsed);
                         return;
                     }
                     UUID uuid = player.getUniqueId();
                     this.RemoveFromWhitelist(uuid);
-                    sender.sendMessage("UUID removed");
+                    parsed = mm.deserialize(this.config.responsePrefix + " Player <green>" + player.getName() + "</green> removed from the whitelist");
+                    sender.sendMessage(parsed);
                 });
 
         CommandAPICommand StatusCommand = new CommandAPICommand("status")
@@ -60,16 +71,42 @@ public final class EcorteWhitelist extends JavaPlugin {
                 .withArguments(new OfflinePlayerArgument("player"))
                 .executes((sender, args) -> {
                     OfflinePlayer player = (OfflinePlayer) args.get("player");
+                    var mm = MiniMessage.miniMessage();
+                    Component parsed;
                     if (player == null) {
-                        sender.sendMessage("Player not found");
+                        parsed = mm.deserialize(this.config.responsePrefix + " Player not found");
+                        sender.sendMessage(parsed);
                         return;
                     }
                     UUID uuid = player.getUniqueId();
                     if (this.whitelist.contains(uuid)) {
-                        sender.sendMessage("UUID is whitelisted");
+                        parsed = mm.deserialize(this.config.responsePrefix + " Player <green>" + player.getName() + "</green> is whitelisted");
                     } else {
-                        sender.sendMessage("UUID is not whitelisted");
+                        parsed = mm.deserialize(this.config.responsePrefix + " Player <green>" + player.getName() + "</green> is not whitelisted");
                     }
+                    sender.sendMessage(parsed);
+                });
+
+        CommandAPICommand ToggleCommand = new CommandAPICommand("toggle")
+                .withPermission("ecortewhitelist.toggle")
+                .withOptionalArguments(new BooleanArgument("state"))
+                .executes((sender, args) -> {
+                    var mm = MiniMessage.miniMessage();
+                    boolean oldState = this.config.requireWhitelist;
+                    boolean newState;
+                    if (args.get("state") == null) {
+                        newState = !oldState;
+                    } else {
+                        newState = (boolean) args.get("state");
+                    }
+                    if (newState == oldState) {
+                        sender.sendMessage(mm.deserialize(this.config.responsePrefix + " The whitelist requirement is already " + newState));
+                        return;
+                    }
+
+                    this.config.requireWhitelist = newState;
+
+                    sender.sendMessage(mm.deserialize(this.config.responsePrefix + " Toggled the whitelist requirement to " + newState));
                 });
 
         new CommandAPICommand("ecortewl")
@@ -77,6 +114,7 @@ public final class EcorteWhitelist extends JavaPlugin {
                 .withSubcommand(AddCommand)
                 .withSubcommand(RemoveCommand)
                 .withSubcommand(StatusCommand)
+                .withSubcommand(ToggleCommand)
                 .register(this);
 
     }
@@ -151,6 +189,9 @@ public final class EcorteWhitelist extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        int pluginId = 24211;
+        Metrics metrics = new Metrics(this, pluginId);
+
         // Plugin startup logic
         this.config = Config.getInstance(this);
         this.dbManager = DBManager.getInstance(this);
@@ -161,12 +202,11 @@ public final class EcorteWhitelist extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new WhitelistListener(this), this);
 
         // LuckPerms
-        this.luckPerms = getServer().getServicesManager().load(LuckPerms.class);
-        if (this.luckPerms == null) {
-            throw new IllegalStateException("LuckPerms API not loaded.");
+        LuckPerms luckPerms = getServer().getServicesManager().load(LuckPerms.class);
+        if (luckPerms != null) {
+            ContextManager contextManager = luckPerms.getContextManager();
+            contextManager.registerCalculator(new WhitelistContext(this));
         }
-        ContextManager contextManager = this.luckPerms.getContextManager();
-        contextManager.registerCalculator(new WhitelistContext(this));
     }
 
     @Override

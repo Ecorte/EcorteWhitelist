@@ -1,9 +1,9 @@
 name: EcorteWhitelist
-version: '1.0-SNAPSHOT'
+version: '1.1'
 main: org.ecorte.ecorteWhitelist.EcorteWhitelist
 api-version: '1.21'
 authors: [ Ecorte ]
-description: A whitelist plugin
+description: A MariaDb based whitelist plugin for Minecraft servers.
 dependencies:
   server:
     CommandAPI:
