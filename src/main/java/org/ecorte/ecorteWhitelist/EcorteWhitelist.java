@@ -44,6 +44,7 @@ public final class EcorteWhitelist extends JavaPlugin {
                     UUID senderUUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
                     if (sender instanceof Player) senderUUID = ((Player) sender).getUniqueId();
                     this.AddToWhitelist(uuid, senderUUID);
+                    this.getComponentLogger().info(Component.text("Player " + player.getName() + " added to the whitelist by " + sender.getName()));
                     parsed = mm.deserialize(this.config.responsePrefix + " Player <green>" + player.getName() + "</green> added to the whitelist by <gold>" + sender.getName() + "</gold>");
                     sender.sendMessage(parsed);
                 });
@@ -138,19 +139,18 @@ public final class EcorteWhitelist extends JavaPlugin {
                     UUID uuid = UUID.fromString(uuidString);
                     this.whitelist.add(uuid);
                 } catch (IllegalArgumentException e) {
-                    getLogger().severe("Invalid UUID format in database: " + uuidString);
+                    this.getComponentLogger().warn(Component.text("Invalid UUID format in database: " + uuidString));
                 }
             }
 
         } catch (SQLException e) {
-            getLogger().severe("Error loading whitelist from the database:");
-            e.printStackTrace();
+            this.getComponentLogger().error(Component.text("Error loading whitelist from the database:"), e);
         }
     }
 
     private void AddToWhitelist(UUID uuid, UUID author) {
         if (this.dbManager.ds == null) {
-            getLogger().severe("Database connection is not initialized.");
+            this.getComponentLogger().error(Component.text("Database connection is not initialized."));
             return;
         }
 
@@ -162,15 +162,14 @@ public final class EcorteWhitelist extends JavaPlugin {
             insertStmt.setString(2, author.toString());
             insertStmt.executeUpdate();
         } catch (SQLException e) {
-            getLogger().severe("Error adding UUID to the whitelist:");
-            e.printStackTrace();
+            this.getComponentLogger().error(Component.text("Error adding UUID to the whitelist:"), e);
         }
         this.LoadWhitelist();
     }
 
     private void RemoveFromWhitelist(UUID uuid) {
         if (this.dbManager.ds == null) {
-            getLogger().severe("Database connection is not initialized.");
+            this.getComponentLogger().error(Component.text("Database connection is not initialized."));
             return;
         }
 
@@ -181,8 +180,7 @@ public final class EcorteWhitelist extends JavaPlugin {
             deleteStmt.setString(1, uuid.toString());
             deleteStmt.executeUpdate();
         } catch (SQLException e) {
-            getLogger().severe("Error removing UUID from the whitelist:");
-            e.printStackTrace();
+            this.getComponentLogger().error(Component.text("Error removing UUID from the whitelist:"), e);
         }
         this.LoadWhitelist();
     }

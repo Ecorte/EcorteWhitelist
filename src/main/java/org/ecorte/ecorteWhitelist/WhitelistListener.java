@@ -33,6 +33,7 @@ public class WhitelistListener implements Listener {
 
             MiniMessage mm = MiniMessage.miniMessage();
             Component parsed = mm.deserialize(plugin.config.kickMessage);
+            this.plugin.getComponentLogger().info("Kicking " + event.getPlayer().getName() + " for not being on the whitelist");
             event.getPlayer().kick(parsed);
         }
     }
