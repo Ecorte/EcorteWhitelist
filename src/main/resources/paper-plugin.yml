@@ -6,10 +6,6 @@ authors: [ Ecorte ]
 description: A MariaDb based whitelist plugin for Minecraft servers.
 dependencies:
   server:
-    CommandAPI:
-      load: BEFORE
-      required: true
-      join-classpath: true
     LuckPerms:
       load: BEFORE
       required: true

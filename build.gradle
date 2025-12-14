@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'org.ecorte'
-version = '1.1'
+version = '1.2'
 
 repositories {
     mavenCentral()
@@ -27,8 +27,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
-    compileOnly("dev.jorel:commandapi-bukkit-core:9.7.0")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-pre3-R0.1-SNAPSHOT")
+    implementation("dev.jorel:commandapi-paper-shade:11.0.1-SNAPSHOT")
     compileOnly("net.luckperms:api:5.4")
     implementation("org.bstats:bstats-bukkit:3.0.2")
     implementation("com.zaxxer:HikariCP:4.0.3")
@@ -66,6 +66,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 tasks.withType(ShadowJar).configureEach {
     relocate 'com.zaxxer.hikari', 'org.ecorte.shaded.hikari'
     relocate 'org.bstats', 'org.ecorte.shaded.bstats'
+    relocate 'dev.jorel.commandapi', 'org.ecorte.shaded.commandapi'
     minimize()
 }
 
